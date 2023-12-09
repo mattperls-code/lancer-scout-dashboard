@@ -15,6 +15,9 @@ const DataPage = () => {
     const [showAddOptions, setShowAddOptions] = useState(false)
     const addButtonRef = useRef()
 
+    // list of all keys in the schema that point to a numeric data type
+    const [toggleableKeys, setToggleableKeys] = useState(["Offense", "Defense", "Speed", "Strength", "Driver Skill", "Communication"])
+
     useEffect(() => {
         const handleClick = (e) => {
             if(addButtonRef.current && !addButtonRef.current.contains(e.target)){
@@ -23,6 +26,8 @@ const DataPage = () => {
         }
 
         addEventListener("click", handleClick)
+
+        // TODO: fetch toggleableKeys from server
 
         return () => removeEventListener("click", handleClick)
     }, [])
@@ -49,7 +54,12 @@ const DataPage = () => {
         type: "Team Performance",
         title: "Team Performance",
         state: {
-            counter: 0
+            multiQuery: {
+                match: null,
+                team: null,
+                record: null
+            },
+            toggleables: toggleableKeys.map(key => ({ key, show: true, label: key }))
         }
     })
 
