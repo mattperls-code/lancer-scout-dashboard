@@ -38,7 +38,7 @@ const MultiSegmentDropdownQuery = ({ multiQuery, setMultiQuery, multiQueryOption
                     }
                 </select>
             </div>,
-            <div key={2 * index + 1} className={"vertical-divider"} />
+            <div key={2 * index + 1} className={"vertical-divider"} style={{ height: 40 }} />
         )
     })
 

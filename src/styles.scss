@@ -15,6 +15,10 @@ html body {
     background-color: $grey;
 }
 
+hr {
+    border: 1px solid $crimson;
+}
+
 h1, h2, h3, p, a, div {
     margin: 0;
     font-family: "OpenSans";
@@ -22,10 +26,17 @@ h1, h2, h3, p, a, div {
 }
 
 h1 {
-    font-weight: bold;
+    font-weight: bolder;
     font-size: 24px;
     text-align: center;
     padding: 20px;
+}
+
+h2 {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    padding: 16px;
 }
 
 p {
@@ -195,6 +206,11 @@ p {
     background-color: $white;
 }
 
+.vertical-divider {
+    margin: 0 8px;
+    border-left: 2px solid $crimson;
+}
+
 .query-segments {
     display: inline-flex;
     height: min-content;
@@ -204,24 +220,43 @@ p {
     border-radius: 10px;
     background-color: $grey;
 
+    select {
+        outline: none;
+        border: none;
+    }
+
+    select:focus {
+        outline: none;
+        border: none;
+    }
+
     .query-segment {
         display: flex;
         flex-direction: column;
     }
-
-    .vertical-divider {
-        height: 40px;
-        margin: 0 8px;
-        border-left: 2px solid $crimson;
-    }
 }
 
-.toggleables {
+.toggleables-container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
-    .toggleable {
+    .toggleables {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
+        overflow-y: scroll;
+
+        .toggleable {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 2px;
+
+            input[type="text"] {
+                width: 100px;
+                margin-left: 4px;
+                border: none;
+            }
+        }
     }
 }

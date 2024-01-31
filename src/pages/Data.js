@@ -16,7 +16,7 @@ const DataPage = () => {
     const addButtonRef = useRef()
 
     // list of all keys in the schema that point to a numeric data type
-    const [toggleableKeys, setToggleableKeys] = useState(["Offense", "Defense", "Speed", "Strength", "Driver Skill", "Communication"])
+    const [toggleableKeys, setToggleableKeys] = useState(["Offense", "Defense", "Speed", "Strength", "Driver Skill", "Communication", "Cycle Speed", "Auto Points", "Teleop Points"])
 
     useEffect(() => {
         const handleClick = (e) => {

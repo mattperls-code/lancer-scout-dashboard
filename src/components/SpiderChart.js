@@ -1,7 +1,11 @@
 import React from "react"
 
 const SpiderChart = ({ width, height, style, data }) => {
-    const polarToCartesian = (theta, r) => ({ x: 18 + r * Math.cos(theta + 0.5 * Math.PI), y: 15 - r * Math.sin(theta + 0.5 * Math.PI) })
+    if (data.length == 0) return (
+        <div style={{ ...style, width, height }} />
+    )
+
+    const polarToCartesian = (theta, r) => ({ x: 18 + r * Math.cos(theta + 0.5 * Math.PI + Math.PI / (2 * data.length)), y: 15 - r * Math.sin(theta + 0.5 * Math.PI + Math.PI / (2 * data.length)) })
 
     // all these can technically be merged, separated for readability
 
@@ -49,7 +53,7 @@ const SpiderChart = ({ width, height, style, data }) => {
         const y = Math.sin(2 * Math.PI * (i / data.length) + 0.5 * Math.PI)
         const textAnchor = x < -0.9 ? "end" : x > 0.9 ? "start" : "middle"
 
-        const anchor = polarToCartesian(2 * Math.PI * (i / data.length), (Math.abs(x) < 0.9 ? 13 : 12) + (Math.abs(y) > 0.99 && data.length > 10 ? 1 : 0))
+        const anchor = polarToCartesian(2 * Math.PI * (i / data.length), (Math.abs(x) < 0.9 ? 11.5 : 10.5) + (Math.abs(y) > 0.99 && data.length > 10 ? 1 : 0))
 
         labelRenders.push(
             <text key={i} x={anchor.x} y={anchor.y} textAnchor={textAnchor} dominantBaseline={"middle"} fontSize={1} fontFamily={"OpenSans"} fontWeight={"700"} >
