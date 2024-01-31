@@ -54,7 +54,7 @@ p {
     flex-wrap: nowrap;
     align-items: center;
     background-color: $white;
-    border-bottom: 0.1px solid $crimson;
+    border-bottom: 2px solid $crimson;
 
     a {
         font-weight: normal;
@@ -76,8 +76,52 @@ p {
 
 .page-content {
     width: 100%;
-    min-height: calc(100vh - 65.6px - 10px); // 65.6px is the empirical raster height of the navbar
+    min-height: calc(100vh - 66.5px - 10px); // 66.5px is the empirical raster height of the navbar
     background-color: $grey;
+}
+
+.standard-content-container {
+    width: 100%;
+    min-height: calc(100vh - 66.5px - 72.5px - 2px);
+    margin: 0;
+    padding: 0;
+    background-color: $white;
+    border-top: 2px solid $crimson;
+}
+
+.tournament-info-container {
+    display: flex;
+    flex-direction: column;
+    width: 560px;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 20px;
+    background-color: $grey;
+    border-radius: 10px;
+
+    label {
+        margin: 20px 0;
+    }
+
+    hr {
+        border-width: 1px;
+        margin: 0 10px;
+    }
+
+    input {
+        width: 200px;
+        margin-left: 4px;
+        border: none;
+    }
+
+    .button {
+        width: 50%;
+        margin: 10px auto;
+        padding: 10px;
+        border: 2px solid $crimson;
+        border-radius: 10px;
+        background-color: $white;
+    }
 }
 
 .tabs-container {
@@ -200,7 +244,7 @@ p {
 
 .tab-content-container {
     width: 100%;
-    min-height: calc(100vh - 65.6px - 49.6px);
+    min-height: calc(100vh - 66.5px - 49.6px);
     margin: 0;
     padding: 0;
     background-color: $white;
