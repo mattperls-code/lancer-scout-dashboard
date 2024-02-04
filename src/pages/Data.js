@@ -11,7 +11,7 @@ import { getNumericFields } from "../scripts/api"
 
 const DataPage = () => {
     const [currentTabIndex, setCurrentTabIndex] = useState(0)
-    const [tabs, setTabs] = useState([])
+    const [tabs, setTabs] = useState(JSON.parse(localStorage.getItem("tab-state")) || [])
 
     const [showAddOptions, setShowAddOptions] = useState(false)
     const addButtonRef = useRef()
@@ -32,6 +32,10 @@ const DataPage = () => {
 
         return () => removeEventListener("click", handleClick)
     }, [])
+
+    useEffect(() => {
+        localStorage.setItem("tab-state", JSON.stringify(tabs))
+    }, [tabs])
 
     const addTab = (tab) => {
         const temp = [...tabs]
