@@ -7,6 +7,7 @@ import TeamOverview from "../components/data/TeamOverview"
 import TeamPerformance from "../components/data/TeamPerformance"
 import TeamComparison from "../components/data/TeamComparison"
 import MatchOverview from "../components/data/MatchOverview"
+import { getNumericFields } from "../scripts/api"
 
 const DataPage = () => {
     const [currentTabIndex, setCurrentTabIndex] = useState(0)
@@ -15,10 +16,12 @@ const DataPage = () => {
     const [showAddOptions, setShowAddOptions] = useState(false)
     const addButtonRef = useRef()
 
-    // list of all keys in the schema that point to a numeric data type
-    const [toggleableKeys, setToggleableKeys] = useState(["Offense", "Defense", "Speed", "Strength", "Driver Skill", "Communication", "Cycle Speed", "Auto Points", "Teleop Points"])
+    // list of all keys in the schema that point to a numeric data type, (should be called from server?)
+    const [toggleableKeys, setToggleableKeys] = useState([])
 
     useEffect(() => {
+        getNumericFields(setToggleableKeys)
+
         const handleClick = (e) => {
             if(addButtonRef.current && !addButtonRef.current.contains(e.target)){
                 setShowAddOptions(false)
@@ -26,8 +29,6 @@ const DataPage = () => {
         }
 
         addEventListener("click", handleClick)
-
-        // TODO: fetch toggleableKeys from server
 
         return () => removeEventListener("click", handleClick)
     }, [])
@@ -46,7 +47,10 @@ const DataPage = () => {
         type: "Team Overview",
         title: "Team Overview",
         state: {
-            counter: 0
+            query: null,
+            toggleables: toggleableKeys.map(key => ({ key, show: true, label: key })),
+            xAxisKey: null,
+            yAxisKey: null
         }
     })
 
@@ -136,21 +140,21 @@ const DataPage = () => {
                     <div ref={addButtonRef} className={"icon-container"} onClick={() => setShowAddOptions(true)}>
                         <FontAwesomeIcon icon={faPlus} className={"icon-svg"} />
                     </div>
-                    {
-                        showAddOptions && (
-                            <div className={"options-menu"}>
-                                <div className={"option"} onClick={addTeamOverview}>Team Overview</div>
-                                <div className={"option"} onClick={addTeamPerformance}>Team Performance</div>
-                                <div className={"option"} onClick={addTeamComparison}>Team Comparison</div>
-                                <div className={"option"} onClick={addMatchOverview}>Match Overview</div>
-                            </div>
-                        )
-                    }
                 </div>
                 {
                     tabRenders
                 }
             </div>
+            {
+                showAddOptions && (
+                    <div className={"tab-options-menu"}>
+                        <div className={"option"} onClick={addTeamOverview}>Team Overview</div>
+                        <div className={"option"} onClick={addTeamPerformance}>Team Performance</div>
+                        <div className={"option"} onClick={addTeamComparison}>Team Comparison</div>
+                        <div className={"option"} onClick={addMatchOverview}>Match Overview</div>
+                    </div>
+                )
+            }
             <div className={"tab-content-container"}>
                 <ContentComponent state={tabs[currentTabIndex]?.state} setState={(state) => {
                     const temp = [...tabs]

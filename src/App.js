@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import HomePage from "./pages/Home"
 import TournamentPage from "./pages/Tournament"
 import SchemaPage from "./pages/Schema"
-import ScanPage from "./pages/Scan"
+import UploadPage from "./pages/Upload"
 import DataPage from "./pages/Data"
 
 import Page from "./components/Page"
@@ -15,7 +15,7 @@ const App = () => {
         "/": <HomePage />,
         "tournament": <TournamentPage />,
         "schema": <SchemaPage />,
-        "scan": <ScanPage />,
+        "upload": <UploadPage />,
         "data": <DataPage />
     }
 

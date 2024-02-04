@@ -15,6 +15,10 @@ html body {
     background-color: $grey;
 }
 
+*::-webkit-scrollbar {
+    display: none;
+}
+
 hr {
     border: 1px solid $crimson;
 }
@@ -129,6 +133,9 @@ p {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
     width: 100%;
     height: 38px;
     margin-top: 10px;
@@ -136,15 +143,16 @@ p {
     border-bottom: 2px solid $crimson;
 
     .tab {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        height: calc(100% - 2px);
+        height: 100%;
         font-family: "OpenSans";
         font-size: 14px;
         padding-left: 20px;
         padding-right: 8px;
-        margin-left: 2px;
+        margin-right: 4px;
+        border-radius: 0;
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
         border: 2px solid;
@@ -216,29 +224,30 @@ p {
             }
         }
 
-        .options-menu {
-            position: absolute;
-            z-index: 1000;
-            top: calc(39.6px + 5px); // 39.6px is the empirical raster height of the tabs container
-            left: -5px;
-            border-radius: 5px;
-            overflow: hidden;
-            border: 0.1px solid $crimson;
-            background-color: $white;
+    }
+}
 
-            .option {
-                width: 140px;
-                font-family: "OpenSans";
-                font-size: 14px;
-                padding: 10px 20px;
-                background-color: $white;
-                transform: background-color 0.4s;
-            }
+.tab-options-menu {
+    position: absolute;
+    z-index: 1000;
+    top: calc(66.5px + 39.6px + 15px); // 66.5px is the height of the navbar, 39.6px is the height of the tabs container
+    left: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 0.1px solid $crimson;
+    background-color: $white;
 
-            .option:hover {
-                background-color: $grey;
-            }
-        }
+    .option {
+        width: 140px;
+        font-family: "OpenSans";
+        font-size: 14px;
+        padding: 10px 20px;
+        background-color: $white;
+        transform: background-color 0.4s;
+    }
+
+    .option:hover {
+        background-color: $grey;
     }
 }
 
@@ -302,5 +311,42 @@ p {
                 border: none;
             }
         }
+    }
+}
+
+.axis-selector {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+
+    select {
+        width: 100px;
+        margin-left: 4px;
+        border: none;
+    }
+}
+
+.qualitative-data-entry {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: min-content;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: $grey;
+
+    .key {
+        width: 180px;
+        margin: 0 10px
+    }
+
+    ul {
+        padding-inline-start: 20px;
+    }
+
+    .value {
+        width: 320px;
+        margin-left:0 10px;
     }
 }

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react"
 import MultiSegmentDropdownQuery from "../MultiSegmentDropdownQuery"
 import SpiderChart from "../SpiderChart"
 import ToggleablesList from "../ToggleablesList"
+import QualitativeData from "../QualitativeData"
+import { getMatchNumbers, getMaximums, getRecordsCount, getTeamPerformance, getTeamsInMatchNumber } from "../../scripts/api"
 
 const TeamPerformance = ({ state, setState }) => {
     // multiQuery is what team is currently queried
@@ -18,72 +20,39 @@ const TeamPerformance = ({ state, setState }) => {
     })
 
     // queried form data
-    const [queriedData, setQueriedData] = useState({ raw: [], spiderChart: [] })
+    const [queriedData, setQueriedData] = useState([])
+    const numericQueriedData = queriedData.filter((entry) => typeof entry.value == "number")
+    const nonNumericQueriedData = queriedData.filter((entry) => typeof entry.value != "number")
+
+    // global max values in numerical fields which are used to normalize spider chart data
+    const [axisMaximums, setAxisMaximums] = useState({})
+    
+    // on start retrieve these maximums
+    useEffect(() => {
+        getMaximums((maximums) => {
+            setAxisMaximums(maximums)
+        })
+    }, [])
 
     // on start or multi query change fetch query options
     useEffect(() => {
-        // TODO: use server
-        setTimeout(() => {
-            setMultiQueryOptions({
-                match: [1, 2, 3, 4],
-                team: ["Robolancers", "Firebirds", "Daisy"],
-                record: [1, 2, 3, 4]
+        getMatchNumbers((matchNumbers) => {
+            getTeamsInMatchNumber(Number(multiQuery.match), (teamNames) => {
+                getRecordsCount(Number(multiQuery.match), multiQuery.team, (recordsCount) => {
+                    const recordNumbers = (new Array(recordsCount).fill()).map((_, i) => i)
+                    
+                    setMultiQueryOptions({
+                        match: matchNumbers,
+                        team: teamNames,
+                        record: recordNumbers
+                    })
+                })
             })
-        }, 300)
+        })
 
-        // TODO: use server
-        setTimeout(() => {
-            setQueriedData({
-                raw: [],
-                spiderChart: [
-                    {
-                        key: "Offense",
-                        value: 9,
-                        max: 10
-                    },
-                    {
-                        key: "Defense",
-                        value: 5,
-                        max: 10
-                    },
-                    {
-                        key: "Speed",
-                        value: 6,
-                        max: 10
-                    },
-                    {
-                        key: "Strength",
-                        value: 10,
-                        max: 10
-                    },
-                    {
-                        key: "Driver Skill",
-                        value: 8,
-                        max: 10
-                    },
-                    {
-                        key: "Communication",
-                        value: 9,
-                        max: 10
-                    },
-                    {
-                        key: "Cycle Speed",
-                        value: 6,
-                        max: 10
-                    },
-                    {
-                        key: "Auto Points",
-                        value: 4,
-                        max: 12
-                    },
-                    {
-                        key: "Teleop Points",
-                        value: 67,
-                        max: 122
-                    }
-                ]
-            })
-        }, 300)
+        if (multiQuery.team && multiQuery.match && multiQuery.record) getTeamPerformance(multiQuery.team, Number(multiQuery.match), Number(multiQuery.record), (data) => {
+            setQueriedData(Object.entries(data[0].jsonScoutInput).map(e => ({ key: e[0], value: e[1] })))
+        })
     }, [multiQuery])
 
     // update parent state when part of query changes, update dropdown options as needed
@@ -114,7 +83,7 @@ const TeamPerformance = ({ state, setState }) => {
     }
 
     // filter queried spider chart data to only include entries toggled to show
-    const toggledSpiderChartData = queriedData.spiderChart.filter(entry => toggleables.some(toggleable => toggleable.show && (toggleable.key == entry.key)))
+    const toggledSpiderChartData = numericQueriedData.filter(entry => toggleables.some(toggleable => toggleable.show && (toggleable.key == entry.key)))
 
     toggledSpiderChartData.forEach((entry) => {
         entry.label = toggleables.find(toggleable => toggleable.key == entry.key).label
@@ -136,11 +105,15 @@ const TeamPerformance = ({ state, setState }) => {
                         <hr />
                         <h2>Quantitative Overview</h2>
                         <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-                            <SpiderChart width={400} height={400} data={toggledSpiderChartData} />
+                            <SpiderChart width={400} height={400} data={toggledSpiderChartData} axisMaximums={axisMaximums} />
                             <div className={"vertical-divider"} style={{ height: 400 }} />
                             <ToggleablesList style={{ height: 400 }} toggleables={toggleables} setShowAtIndex={setShowAtIndex} setLabelAtIndex={setLabelAtIndex} />
                         </div>
                         <hr />
+                        <h2>Qualitative Overview</h2>
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                            <QualitativeData entries={nonNumericQueriedData} />
+                        </div>
                     </React.Fragment>
                 )
             }

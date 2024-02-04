@@ -1,3 +1,4 @@
+import arrayUnique from "array-unique"
 import React from "react"
 
 const MultiSegmentDropdownQuery = ({ multiQuery, setMultiQuery, multiQueryOptions }) => {
@@ -13,8 +14,8 @@ const MultiSegmentDropdownQuery = ({ multiQuery, setMultiQuery, multiQueryOption
 
     Object.entries(multiQuery).forEach((query, index) => {
         const options = []
-
-        multiQueryOptions[query[0]].forEach((option => {
+        
+        arrayUnique(multiQueryOptions[query[0]]).forEach((option => {
             options.push(
                 <option key={option}>
                     {

@@ -1,11 +1,11 @@
 import React from "react"
 
-const SpiderChart = ({ width, height, style, data }) => {
+const SpiderChart = ({ width, height, style, data, axisMaximums }) => {
     if (data.length == 0) return (
         <div style={{ ...style, width, height }} />
     )
 
-    const polarToCartesian = (theta, r) => ({ x: 18 + r * Math.cos(theta + 0.5 * Math.PI + Math.PI / (2 * data.length)), y: 15 - r * Math.sin(theta + 0.5 * Math.PI + Math.PI / (2 * data.length)) })
+    const polarToCartesian = (theta, r) => isNaN(r) ? ({ x: 18, y: 15 }) : ({ x: 18 + r * Math.cos(theta + 0.5 * Math.PI + Math.PI / (2 * data.length)), y: 15 - r * Math.sin(theta + 0.5 * Math.PI + Math.PI / (2 * data.length)) })
 
     // all these can technically be merged, separated for readability
 
@@ -33,7 +33,7 @@ const SpiderChart = ({ width, height, style, data }) => {
         }
     }
 
-    const indicatorPoints = data.map((point, index) => polarToCartesian(2 * Math.PI * (index / data.length), 9 * (point.value / point.max)))
+    const indicatorPoints = data.map((point, index) => polarToCartesian(2 * Math.PI * (index / data.length), 9 * (Math.min(point.value / axisMaximums[point.key], 1) || 1)))
 
     const indicatorRenders = []
     for(let i = 0;i<data.length;i++){
@@ -56,9 +56,9 @@ const SpiderChart = ({ width, height, style, data }) => {
         const anchor = polarToCartesian(2 * Math.PI * (i / data.length), (Math.abs(x) < 0.9 ? 11.5 : 10.5) + (Math.abs(y) > 0.99 && data.length > 10 ? 1 : 0))
 
         labelRenders.push(
-            <text key={i} x={anchor.x} y={anchor.y} textAnchor={textAnchor} dominantBaseline={"middle"} fontSize={1} fontFamily={"OpenSans"} fontWeight={"700"} >
+            <text key={"label" + i} x={anchor.x} y={anchor.y} textAnchor={textAnchor} dominantBaseline={"middle"} fontSize={1} fontFamily={"OpenSans"} fontWeight={"700"} >
                 {
-                    data[i].label + " (" + data[i].value + "/" + data[i].max + ")"
+                    data[i].label + " (" + data[i].value + "/" + axisMaximums[data[i].key] + ")"
                 }
             </text>
         )

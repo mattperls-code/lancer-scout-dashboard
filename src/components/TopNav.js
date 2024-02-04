@@ -26,7 +26,7 @@ const TopNav = () => {
             <Link href={"/"} bold>Lancer Scout</Link>
             <Link href={"/tournament"}>Tournament</Link>
             <Link href={"/schema"}>Schema</Link>
-            <Link href={"/scan"}>Scan</Link>
+            <Link href={"/upload"}>Upload</Link>
             <Link href={"/data"}>Data</Link>
         </div>
     )

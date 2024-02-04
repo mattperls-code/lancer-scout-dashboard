@@ -12,11 +12,16 @@ const testForm = [{"title":"General","ui":{"type":"header"}},{"title":"Scout Nam
 
 const form = testForm.filter(e => e.ui.type != "header")
 
-const ScanPage = () => {
+const UploadPage = () => {
     const webcamRef = useRef()
 
     useEffect(() => {
+        let finishedScanning = true
+
         const scan = (e) => {
+            if (!finishedScanning) return alert("Existing upload task has not been resolved yet. Please allow the pending upload to finish before starting a new upload. If this issue persists, try refreshing the page or contact a developer.")
+            else finishedScanning = false
+
             if (e.code != "Space") return
 
             const snapshot = webcamRef.current.getScreenshot()
@@ -36,6 +41,8 @@ const ScanPage = () => {
                 const output = jsqr(imageData.data, 640, 480)
 
                 if(output == null){
+                    finishedScanning = true
+
                     alert("Failed to scan qr code. Make sure the image is not blurry and contains a valid qr code.")
                 } else {
                     const buffer = []
@@ -44,7 +51,11 @@ const ScanPage = () => {
 
                     const data = generateDataFromBuffer(buffer, form)
 
-                    if (data == null) return alert("Failed to parse QR code. Make sure the schema on the app matches the schema stored on the server.")
+                    if(data == null){
+                        finishedScanning = true
+                        
+                        return alert("Failed to parse QR code. Make sure the schema on the app matches the schema stored on the server.")
+                    }
 
                     const receipt = {
                         id: data.id,
@@ -58,32 +69,10 @@ const ScanPage = () => {
                     console.log({ receipt })
 
                     uploadForm(receipt.id, receipt.entries, () => {
-                        console.log("yay W manny lessgo")
+                        finishedScanning = true
+
+                        alert("Successfully uploaded form. Receipt is available in the console if needed.")
                     })
-                    
-                    // const allPersistentKeys = Object.keys(localStorage)
-
-                    // if(allPersistentKeys.includes("lancer-scout-data")){
-                    //     try {
-                    //         const json = JSON.parse(localStorage.getItem("lancer-scout-data"))
-
-                    //         if(json.some(e => e.id == receipt.id)){
-                    //             alert("Found duplicate copy of the scanned code in the database. If this is a mistake, please contact a programmer to validate the qr code receipt in console and json in local storage.")
-                    //         } else {
-                    //             json.push(receipt)
-
-                    //             localStorage.setItem("lancer-scout-data", JSON.stringify(json))
-
-                    //             alert("Successfully scanned qr code and added to database.")
-                    //         }
-                    //     } catch(e) {
-                    //         alert("An issue occurred adding to database. Please contact a programmer to validate the json in local storage.")
-                    //     }
-                    // } else {
-                    //     localStorage.setItem("lancer-scout-data", JSON.stringify([ receipt ]))
-
-                    //     alert("Successfully scanned qr code and added to database.")
-                    // }
                 }
             }
         }
@@ -95,13 +84,13 @@ const ScanPage = () => {
 
     return (
         <React.Fragment>
-            <h1>Welcome to the Scan Page</h1>
+            <h1>Welcome to the Upload Page</h1>
             <div style={{ textAlign: "center" }}>
-                <Webcam ref={webcamRef} />
-                <h2>Press space to scan</h2>
+                <Webcam style={{ borderRadius: "10px" }} ref={webcamRef} mirrored />
+                <h2>Press Space to Scan and Upload</h2>
             </div>
         </React.Fragment>
     )
 }
 
-export default ScanPage
+export default UploadPage
